@@ -32,6 +32,18 @@ const adminSchema = new Schema({
   username: { type: String, unique: true },
   password: String,
 });
+const contentTypes = ["image", "video", "article", "audio"];
+
+const Types = mongoose.Schema.Types;
+
+const contentSchema = new Schema({
+  link: { type: String, required: true },
+  type: { type: String, enum: contentTypes, required: true },
+  title: { type: String, required: true },
+  // tags: [{ types: Types.ObjectId, ref: "Tag" }],
+  userId: { type: Types.ObjectId, ref: "User", required: true },
+});
 
 export const UserModel = model("User", userSchema);
 export const AdminModel = model("Admin", adminSchema);
+export const ContentModel = model("Content", contentSchema);

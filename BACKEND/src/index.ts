@@ -1,9 +1,10 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import { UserModel } from "./db";
+import { ContentModel, UserModel } from "./db";
 import { z } from "zod";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { UserMiddleware } from "./middleware";
 
 const hashPassword = async (password: string) => {
   const saltRounds = 5;
@@ -118,7 +119,24 @@ app.post("/api/v1/signin", async (req, res) => {
   }
 });
 
-app.post("/api/v1/content", (req, res) => {});
+const titleSchema = z
+  .string()
+  .min(2, "Username must be at least 2 characters long");
+
+app.post("/api/v1/content", UserMiddleware, async (req, res) => {
+  const title = titleSchema.parse(req.body.title);
+  const link = req.body.link;
+  const type = req.body.type;
+  await ContentModel.create({
+    link,
+    type,
+    title,
+    userId: req.userId,
+    // tags: [],
+  });
+  res.json({ message: "Content added" });
+  return;
+});
 
 app.get("/api/v1/content", (req, res) => {});
 
