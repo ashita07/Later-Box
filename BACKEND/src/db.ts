@@ -25,6 +25,7 @@ connectToDatabase(MONGO_URL);
 const userSchema = new Schema({
   username: { type: String, unique: true },
   password: String,
+  salt: String,
 });
 
 const adminSchema = new Schema({

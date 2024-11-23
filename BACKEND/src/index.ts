@@ -1,5 +1,5 @@
 import express from "express";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { UserModel } from "./db";
 import { z } from "zod";
 import dotenv from "dotenv";
@@ -11,8 +11,20 @@ const hashPassword = async (password: string) => {
   return hashedPassword;
 };
 
+const comparePassword = async (
+  password: string,
+  hashedPassword: any | string
+): Promise<boolean> => {
+  return await bcrypt.compare(password, hashedPassword);
+};
+
 dotenv.config();
 const Port = process.env.PORT;
+const jwt_password = process.env.JWT_PASSWORD;
+
+if (!jwt_password) {
+  throw new Error("JWT_Password is not defined in environment variables");
+}
 
 const usernameSchema = z
   .string()
@@ -37,6 +49,7 @@ app.post("/api/v1/signup", async (req, res) => {
       res.status(403).json({
         message: "user with this username already exists",
       });
+      return;
     }
 
     await UserModel.create({
@@ -46,19 +59,64 @@ app.post("/api/v1/signup", async (req, res) => {
     res.status(200).json({
       message: "User signed Up",
     });
+    return;
   } catch (e) {
     if (e instanceof z.ZodError)
       res.status(411).json({
         message: "Error in inputs",
         errors: e.errors,
       });
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
     });
   }
 });
 
-app.post("/api/v1/signin", (req, res) => {});
+app.post("/api/v1/signin", async (req, res) => {
+  try {
+    const username = usernameSchema.parse(req.body.username);
+    const password = passwordSchema.parse(req.body.password);
+    const existingUser = await UserModel.findOne({
+      username,
+    });
+    if (!existingUser) {
+      res.status(404).json({
+        message: "user not found",
+      });
+      return;
+    }
+    const isPasswordValid = await comparePassword(
+      password,
+      existingUser.password
+    );
+    if (!isPasswordValid) {
+      res.status(401).json({
+        message: "Invalid username or password",
+      });
+      return;
+    }
+    if (isPasswordValid) {
+      const token = jwt.sign(
+        {
+          id: existingUser._id,
+        },
+        jwt_password
+      );
+      res.status(200).json({
+        token,
+      });
+      return;
+    }
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      res.status(400).json({
+        message: "Validation error",
+        error: e.errors,
+      });
+      return;
+    }
+  }
+});
 
 app.post("/api/v1/content", (req, res) => {});
 
