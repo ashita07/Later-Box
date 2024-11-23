@@ -1,19 +1,25 @@
 import express from "express";
 // import jwt from "jsonwebtoken";
 import { UserModel } from "./db";
-// import { z } from "zod";
+import { z } from "zod";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
+
+const hashPassword = async (password: string) => {
+  const saltRounds = 5;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+};
 
 dotenv.config();
-
 const Port = process.env.PORT;
 
-// const usernameSchema = z
-//   .string()
-//   .min(2, "Username must be at least 2 characters long");
-// const passwordSchema = z
-//   .string()
-//   .min(8, "Password must be at least 8 characters long");
+const usernameSchema = z
+  .string()
+  .min(2, "Username must be at least 2 characters long");
+const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters long");
 
 const app = express();
 
@@ -21,12 +27,14 @@ app.use(express.json());
 
 app.post("/api/v1/signup", async (req, res) => {
   try {
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = usernameSchema.parse(req.body.username);
+    const HashedPassword = await hashPassword(
+      passwordSchema.parse(req.body.password)
+    );
 
     await UserModel.create({
       username: username,
-      password: password,
+      password: HashedPassword,
     });
     res.status(200).json({
       message: "User signed Up",
