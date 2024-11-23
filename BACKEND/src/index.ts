@@ -32,6 +32,13 @@ app.post("/api/v1/signup", async (req, res) => {
       passwordSchema.parse(req.body.password)
     );
 
+    const existingUser = await UserModel.findOne({ username });
+    if (existingUser) {
+      res.status(403).json({
+        message: "user with this username already exists",
+      });
+    }
+
     await UserModel.create({
       username: username,
       password: HashedPassword,
@@ -40,8 +47,13 @@ app.post("/api/v1/signup", async (req, res) => {
       message: "User signed Up",
     });
   } catch (e) {
-    res.status(400).json({
-      message: "failed to signup",
+    if (e instanceof z.ZodError)
+      res.status(411).json({
+        message: "Error in inputs",
+        errors: e.errors,
+      });
+    return res.status(500).json({
+      message: "Server error",
     });
   }
 });
