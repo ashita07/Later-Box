@@ -151,10 +151,17 @@ app.get("/api/v1/ViewContent", UserMiddleware, async (req, res) => {
 app.delete("/api/v1/deleteContent", UserMiddleware, async (req, res) => {
   try {
     const contentId = req.body.contentId;
-    await ContentModel.deleteMany({
+    const deleteResult = await ContentModel.deleteMany({
       _id: contentId,
       userId: req.userId,
     });
+
+    if (deleteResult.deletedCount === 0) {
+      res.status(404).json({
+        message: "No content found for specified user and content ID",
+      });
+      return;
+    }
     res.json({
       message: "Deleted",
     });
