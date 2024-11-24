@@ -123,7 +123,7 @@ const titleSchema = z
   .string()
   .min(2, "Username must be at least 2 characters long");
 
-app.post("/api/v1/content", UserMiddleware, async (req, res) => {
+app.post("/api/v1/postContent", UserMiddleware, async (req, res) => {
   const title = titleSchema.parse(req.body.title);
   const link = req.body.link;
   const type = req.body.type;
@@ -138,7 +138,30 @@ app.post("/api/v1/content", UserMiddleware, async (req, res) => {
   return;
 });
 
-app.get("/api/v1/content", (req, res) => {});
+app.get("/api/v1/ViewContent", UserMiddleware, async (req, res) => {
+  const userId = req.userId;
+  const content = await ContentModel.find({
+    userId: userId,
+  }).populate({ path: "userId", select: "-password" });
+  res.json({
+    content,
+  });
+});
+
+app.delete("/api/v1/deleteContent", UserMiddleware, async (req, res) => {
+  try {
+    const contentId = req.body.contentId;
+    await ContentModel.deleteMany({
+      _id: contentId,
+      userId: req.userId,
+    });
+    res.json({
+      message: "Deleted",
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 app.post("/api/v1/link/share", (req, res) => {});
 
