@@ -176,6 +176,7 @@ app.post("/api/v1/link/share", UserMiddleware, async (req, res) => {
     const { contentId } = req.body;
     if (!contentId) {
       res.status(400).json({ message: "Content ID is required" });
+      return;
     }
     const content = await ContentModel.findOne({
       _id: contentId,
@@ -183,18 +184,18 @@ app.post("/api/v1/link/share", UserMiddleware, async (req, res) => {
     });
     if (!content) {
       res.status(404).json({ message: "Content not found or unauthorized" });
-      const hash = crypto.randomBytes(16).toString("hex");
-
-      await SchemaModel.create({
-        hash,
-        userId: req.userId,
-      });
-
-      res.status(201).json({
-        message: "Share link created successfully",
-        shareLink: `${req.protocol}://${req.get("host")}/api/v1/link/${hash}`,
-      });
     }
+    const hash = crypto.randomBytes(16).toString("hex");
+
+    await SchemaModel.create({
+      hash,
+      userId: req.userId,
+    });
+
+    res.status(201).json({
+      message: "Share link created successfully",
+      shareLink: `${req.protocol}://${req.get("host")}/api/v1/link/${hash}`,
+    });
   } catch (e) {
     console.error("Error createing share link:", e);
     res.status(500).json({ message: "Interet server error" });
