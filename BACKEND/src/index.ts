@@ -1,10 +1,11 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import { ContentModel, UserModel } from "./db";
+import { ContentModel, UserModel, SchemaModel } from "./db";
 import { z } from "zod";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { UserMiddleware } from "./middleware";
+import crypto from "crypto";
 
 const hashPassword = async (password: string) => {
   const saltRounds = 5;
@@ -170,8 +171,66 @@ app.delete("/api/v1/deleteContent", UserMiddleware, async (req, res) => {
   }
 });
 
-app.post("/api/v1/link/share", (req, res) => {});
+app.post("/api/v1/link/share", UserMiddleware, async (req, res) => {
+  try {
+    const { contentId } = req.body;
+    if (!contentId) {
+      res.status(400).json({ message: "Content ID is required" });
+    }
+    const content = await ContentModel.findOne({
+      _id: contentId,
+      userId: req.userId,
+    });
+    if (!content) {
+      res.status(404).json({ message: "Content not found or unauthorized" });
+      const hash = crypto.randomBytes(16).toString("hex");
 
-app.get("/api/v1/link/:sharelink", (req, res) => {});
+      await SchemaModel.create({
+        hash,
+        userId: req.userId,
+      });
+
+      res.status(201).json({
+        message: "Share link created successfully",
+        shareLink: `${req.protocol}://${req.get("host")}/api/v1/link/${hash}`,
+      });
+    }
+  } catch (e) {
+    console.error("Error createing share link:", e);
+    res.status(500).json({ message: "Interet server error" });
+  }
+});
+
+app.get("/api/v1/link/:sharelink", async (req, res) => {
+  try {
+    const { sharelink } = req.params;
+
+    if (!sharelink) {
+      res.status(400).json({
+        message: "share link is required",
+      });
+      return;
+    }
+
+    const link = await SchemaModel.findOne({ hash: sharelink });
+    if (!link) {
+      res.status(404).json({ message: "invalid or expired link" });
+      return;
+    }
+    const content = await ContentModel.findOne({
+      userId: link.userId,
+    });
+    if (!content) {
+      res.status(404).json({ message: "content not found" });
+    }
+    res.status(200).json({
+      message: "content found successfully",
+      content,
+    });
+  } catch (e) {
+    console.log("error retieving content:", e);
+    res.status(500).json({ message: "internal servar error" });
+  }
+});
 
 app.listen(Port || 3000);
