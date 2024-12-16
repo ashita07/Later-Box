@@ -3,6 +3,7 @@ import { Button } from "./Components/Button";
 import "./index.css";
 import { PlusIcon } from "./icons/plusIcon";
 import { ShareIcon } from "./icons/shareIcon";
+import { Card } from "./Components/Card";
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
           size="md"
           variant="secondary"
         />
+        <Card />
       </div>
     </>
   );

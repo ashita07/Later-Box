@@ -229,8 +229,8 @@ app.get("/api/v1/link/:sharelink", async (req, res) => {
       content,
     });
   } catch (e) {
-    console.log("error retieving content:", e);
-    res.status(500).json({ message: "internal servar error" });
+    console.log("error retrieving content:", e);
+    res.status(500).json({ message: "internal server error" });
   }
 });
 
