@@ -1,3 +1,4 @@
+import { DeleteIcon } from "../icons/Delete";
 import { ShareIcon } from "../icons/shareIcon";
 
 interface CardProps {
@@ -21,24 +22,35 @@ export function Card(props: CardProps) {
             <ShareIcon size="md" />
           </div>
 
-          <ShareIcon size="md" />
+          <DeleteIcon />
         </div>
       </div>
-      {props.type === "youtube" && (
-        <iframe
-          className="w-full pt-3"
-          src={props.link.replace("watch", "embed")}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        ></iframe>
-      )}
-      {props.type === "twitter" && (
-        <blockquote className="twitter-tweet">
-          <a href="https://twitter.com/username/status/807811447862468608"></a>
-        </blockquote>
-      )}
+      <div className="p-3">
+        {props.type === "youtube" && (
+          <div className="relative w-full">
+            {/* The iframe displays the embedded video */}
+            <iframe
+              className=" w-full h-[315px] rounded-md" // Adjust height if needed
+              src={props.link.replace("watch", "embed")}
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+
+            {/* The overlay captures clicks and redirects */}
+            <div
+              className="absolute inset-0 cursor-pointer"
+              onClick={() => window.open(props.link, "_blank")} // Opens the YouTube video in a new tab
+            ></div>
+          </div>
+        )}
+        {props.type === "twitter" && (
+          <blockquote className="twitter-tweet">
+            <a href={props.link.replace("x.com", "twitter.com")}></a>
+          </blockquote>
+        )}
+      </div>
     </div>
   );
 }
