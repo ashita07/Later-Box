@@ -24,6 +24,7 @@ const varientStyles = {
 export const Button = (props: ButtonProps) => {
   return (
     <button
+      onClick={props.onClick}
       className={`${varientStyles[props.variant]} ${defaultStyles} ${
         sizeStyles[props.size]
       }`}

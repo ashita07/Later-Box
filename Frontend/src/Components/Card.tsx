@@ -1,5 +1,5 @@
 import { DeleteIcon } from "../icons/Delete";
-import { ShareIcon } from "../icons/shareIcon";
+import { ShareIcon } from "../icons/ShareIcon";
 
 interface CardProps {
   title: string;
@@ -40,7 +40,7 @@ export function Card(props: CardProps) {
 
             {/* The overlay captures clicks and redirects */}
             <div
-              className="absolute inset-0 cursor-pointer"
+              className="absolute inset-0 cursor-pointer z-10"
               onClick={() => window.open(props.link, "_blank")} // Opens the YouTube video in a new tab
             ></div>
           </div>
