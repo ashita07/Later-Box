@@ -13,7 +13,7 @@ export default {
         grey: {
           200: "#fafcfc",
           100: "##ffffff",
-          400: "#dedede",
+          400: "#e5e4e2",
           500: "#9d9ea3",
           700: "#222c38",
         },

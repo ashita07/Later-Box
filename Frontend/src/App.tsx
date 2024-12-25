@@ -5,16 +5,20 @@ import { PlusIcon } from "./icons/plusIcon";
 import { ShareIcon } from "./icons/ShareIcon";
 import { Card } from "./Components/Card";
 import { CreateContentModal } from "./Components/CreateContentModal";
+import { SideBar } from "./Components/Sidebar";
 
 const App: React.FC = () => {
-  const [modelOpen, setModelopen] = useState(true);
+  const [modelOpen, setModelOpen] = useState(false);
   return (
     <>
       <div>
+        <SideBar />
+      </div>
+      <div className="ml-72 h-min-screen bg-grey-400 min-h-screen p-4">
         <CreateContentModal
           open={modelOpen}
           onClose={() => {
-            setModelopen(false);
+            setModelOpen(false);
           }}
         />
         <div className="flex justify-evenly p-8">
@@ -26,7 +30,7 @@ const App: React.FC = () => {
           />
 
           <Button
-            onClick={() => setModelopen(true)}
+            onClick={() => setModelOpen(true)}
             startIcon={<ShareIcon size="md" />}
             text="add content"
             size="md"
