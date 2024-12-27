@@ -1,57 +1,9 @@
-import React, { useState } from "react";
-import { Button } from "./Components/Button";
-import "./index.css";
-import { PlusIcon } from "./icons/plusIcon";
-import { ShareIcon } from "./icons/ShareIcon";
-import { Card } from "./Components/Card";
-import { CreateContentModal } from "./Components/CreateContentModal";
-import { SideBar } from "./Components/Sidebar";
+// import { Dashboard } from "./pages/Dashboard";
+import { Signin } from "./pages/Signin";
+import { Signup } from "./pages/Signup";
 
 const App: React.FC = () => {
-  const [modelOpen, setModelOpen] = useState(false);
-  return (
-    <>
-      <div>
-        <SideBar />
-      </div>
-      <div className="ml-72 h-min-screen bg-grey-400 min-h-screen p-4">
-        <CreateContentModal
-          open={modelOpen}
-          onClose={() => {
-            setModelOpen(false);
-          }}
-        />
-        <div className="flex justify-evenly p-8">
-          <Button
-            startIcon={<PlusIcon size="md" />}
-            text="share content"
-            size="md"
-            variant="primary"
-          />
-
-          <Button
-            onClick={() => setModelOpen(true)}
-            startIcon={<ShareIcon size="md" />}
-            text="add content"
-            size="md"
-            variant="secondary"
-          />
-        </div>
-        <div className="flex min-h-60 ">
-          <Card
-            type="twitter"
-            link="https://x.com/nitesh_singh5/status/1868697579237896513"
-            title="first tweet"
-          />
-          <Card
-            type="youtube"
-            link="https://www.youtube.com/watch?v=DjYZk8nrXVY&ab_channel=AshishPratapSingh"
-            title="Youtube video"
-          />
-        </div>
-      </div>
-    </>
-  );
+  return <Signin />;
 };
 
 export default App;

@@ -10,7 +10,7 @@ export function SideBar() {
       top-0 border-2"
     >
       <div className="flex font-extrabold px-0.5 py-3 text-2xl  ">
-        <div className="p-1">
+        <div className="p-1 pr-2">
           <Boxed />
         </div>
         <h1 className="content-center ">LaterBox</h1>
