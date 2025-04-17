@@ -173,7 +173,22 @@ app.delete("/api/v1/deleteContent", UserMiddleware, async (req, res) => {
 
 app.post("/api/v1/link/share", UserMiddleware, async (req, res) => {
   try {
-    const { contentId } = req.body;
+    const { contentId, shareWholeContent } = req.body;
+    const hash = crypto.randomBytes(16).toString("hex");
+
+    if (shareWholeContent) {
+      await SchemaModel.create({
+        hash,
+        userId: req.userId,
+        type: "whole",
+      });
+      res.status(201).json({
+        message: "profile share link created successfully",
+        shareLink: `${req.protocol}://${req.get("host")}/api/v1/link/${hash}`,
+      });
+      return;
+    }
+
     if (!contentId) {
       res.status(400).json({ message: "Content ID is required" });
       return;
@@ -185,11 +200,12 @@ app.post("/api/v1/link/share", UserMiddleware, async (req, res) => {
     if (!content) {
       res.status(404).json({ message: "Content not found or unauthorized" });
     }
-    const hash = crypto.randomBytes(16).toString("hex");
 
     await SchemaModel.create({
       hash,
       userId: req.userId,
+      type: "single",
+      contentId,
     });
 
     res.status(201).json({
@@ -206,31 +222,53 @@ app.get("/api/v1/link/:sharelink", async (req, res) => {
   try {
     const { sharelink } = req.params;
 
-    if (!sharelink) {
-      res.status(400).json({
-        message: "share link is required",
+    const link = await SchemaModel.findOne({ hash: sharelink });
+    if (!link) {
+      res.status(404).json({ message: "Invalid or expired link" });
+      return;
+    }
+
+    if (link.type === "whole") {
+      const content = await ContentModel.find({ userId: link.userId });
+      res.status(200).json({
+        message: "User profile content found successfully",
+        content,
       });
       return;
     }
 
-    const link = await SchemaModel.findOne({ hash: sharelink });
-    if (!link) {
-      res.status(404).json({ message: "invalid or expired link" });
+    if (link.type === "single") {
+      if (!link.contentId) {
+        res.status(400).json({
+          message: "Missing contentId for single link",
+        });
+        return;
+      }
+
+      const content = await ContentModel.findOne({
+        _id: link.contentId,
+        userId: link.userId,
+      });
+
+      if (!content) {
+        res.status(404).json({ message: "Content not found" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Content found successfully",
+        content,
+      });
       return;
     }
-    const content = await ContentModel.findOne({
-      userId: link.userId,
-    });
-    if (!content) {
-      res.status(404).json({ message: "content not found" });
-    }
-    res.status(200).json({
-      message: "content found successfully",
-      content,
-    });
+
+    // Catch-all for unexpected `type` values
+    res.status(400).json({ message: "Invalid link type" });
+    return;
   } catch (e) {
-    console.log("error retrieving content:", e);
-    res.status(500).json({ message: "internal server error" });
+    console.error("Error retrieving content:", e);
+    res.status(500).json({ message: "Internal server error" });
+    return;
   }
 });
 

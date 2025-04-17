@@ -61,6 +61,8 @@ const contentSchema = new Schema({
 const SchemaLink = new Schema({
   hash: { type: String, required: true },
   userId: { type: Types.ObjectId, ref: "User", required: true },
+  type: { type: String, enum: ["single", "whole"], required: true },
+  contentId: { type: Types.ObjectId, ref: "Content", default: null },
 });
 
 export const UserModel = model("User", userSchema);
