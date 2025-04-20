@@ -29,9 +29,8 @@ if (!jwt_password) {
   throw new Error("JWT_Password is not defined in environment variables");
 }
 
-const usernameSchema = z
-  .string()
-  .min(2, "Username must be at least 2 characters long");
+const usernameSchema = z.string();
+
 const passwordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters long");
@@ -121,9 +120,7 @@ app.post("/api/v1/signin", async (req, res) => {
   }
 });
 
-const titleSchema = z
-  .string()
-  .min(2, "Username must be at least 2 characters long");
+const titleSchema = z.string();
 
 app.post("/api/v1/postContent", UserMiddleware, async (req, res) => {
   const title = titleSchema.parse(req.body.title);

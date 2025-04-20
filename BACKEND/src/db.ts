@@ -32,7 +32,7 @@ const adminSchema = new Schema({
   username: { type: String, unique: true },
   password: String,
 });
-const contentTypes = ["image", "video", "article", "audio"];
+const contentTypes = ["youtube", "twitter"];
 
 const Types = mongoose.Schema.Types;
 

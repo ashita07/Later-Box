@@ -16,7 +16,7 @@ export function Signin() {
       username,
       password,
     });
-    const jwt = response.data.token;
+    const jwt = "bearer " + response.data.token;
     localStorage.setItem("token", jwt);
     navigate("/Dashboard");
   }

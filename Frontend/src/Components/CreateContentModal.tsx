@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { CrossIcon } from "../icons/CrossIcon";
 import { Button } from "./Button";
 import axios from "axios";
@@ -15,21 +15,21 @@ enum ContentType {
 }
 
 export function CreateContentModal(props: propsF) {
-  const titleref = useRef<HTMLInputElement>(null);
-  const linkref = useRef<HTMLInputElement>(null);
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
   const [type, setType] = useState(ContentType.Youtube);
 
   async function submit() {
-    const title = titleref.current?.value;
-    const link = linkref.current?.value;
+    console.log("DATA SENDING:", { title, link, type });
 
     await axios.post(
-      `${backend_url}/api/v1/content`,
+      `${backend_url}/api/v1/postContent`,
       { link, title, type },
       {
         headers: { Authorization: localStorage.getItem("token") },
       }
     );
+    props.onClose();
   }
 
   return (
@@ -48,8 +48,14 @@ export function CreateContentModal(props: propsF) {
                 <CrossIcon />
               </div>
               {/* Additional Content Here */}
-              <Input ref={titleref} placeholder={"title"} />
-              <Input ref={linkref} placeholder={"link"} />
+              <Input
+                placeholder="Title"
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <Input
+                placeholder="Link"
+                onChange={(e) => setLink(e.target.value)}
+              />
               <h1>Type:</h1>
               <div className="flex justify-center p-2 gap-4 space-between">
                 <Button
@@ -90,7 +96,7 @@ export function CreateContentModal(props: propsF) {
   );
 }
 interface InputProps {
-  onChange?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string; // Type placeholder as string
 }
 
