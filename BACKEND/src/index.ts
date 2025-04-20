@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { UserMiddleware } from "./middleware";
 import crypto from "crypto";
+import cors from "cors";
 
 const hashPassword = async (password: string) => {
   const saltRounds = 5;
@@ -38,7 +39,7 @@ const passwordSchema = z
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 app.post("/api/v1/signup", async (req, res) => {
   try {
     const username = usernameSchema.parse(req.body.username);

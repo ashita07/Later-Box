@@ -1,12 +1,37 @@
+import { useRef, useState } from "react";
 import { CrossIcon } from "../icons/CrossIcon";
 import { Button } from "./Button";
+import axios from "axios";
+import { backend_url } from "../../config";
 
 // controlled component
 interface propsF {
   open: boolean;
   onClose: () => void;
 }
+enum ContentType {
+  Youtube = "youtube",
+  Twitter = "twitter",
+}
+
 export function CreateContentModal(props: propsF) {
+  const titleref = useRef<HTMLInputElement>(null);
+  const linkref = useRef<HTMLInputElement>(null);
+  const [type, setType] = useState(ContentType.Youtube);
+
+  async function submit() {
+    const title = titleref.current?.value;
+    const link = linkref.current?.value;
+
+    await axios.post(
+      `${backend_url}/api/v1/content`,
+      { link, title, type },
+      {
+        headers: { Authorization: localStorage.getItem("token") },
+      }
+    );
+  }
+
   return (
     <div>
       {props.open && (
@@ -23,10 +48,39 @@ export function CreateContentModal(props: propsF) {
                 <CrossIcon />
               </div>
               {/* Additional Content Here */}
-              <Input placeholder={"title"} />
-              <Input placeholder={"link"} />
+              <Input ref={titleref} placeholder={"title"} />
+              <Input ref={linkref} placeholder={"link"} />
+              <h1>Type:</h1>
+              <div className="flex justify-center p-2 gap-4 space-between">
+                <Button
+                  size="md"
+                  onClick={() => {
+                    setType(ContentType.Youtube);
+                  }}
+                  text="youtube"
+                  variant={
+                    type === ContentType.Youtube ? "secondary" : "primary"
+                  }
+                ></Button>
+                <Button
+                  size="md"
+                  onClick={() => {
+                    setType(ContentType.Twitter);
+                  }}
+                  text="Twitter"
+                  variant={
+                    type === ContentType.Twitter ? "secondary" : "primary"
+                  }
+                ></Button>{" "}
+              </div>
+
               <div className="flex justify-center">
-                <Button variant="secondary" size="md" text="submit" />
+                <Button
+                  onClick={submit}
+                  variant="secondary"
+                  size="md"
+                  text="submit"
+                />
               </div>
             </span>
           </div>

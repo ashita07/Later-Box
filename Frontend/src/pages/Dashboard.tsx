@@ -14,7 +14,7 @@ export const Dashboard: React.FC = () => {
       <div>
         <SideBar />
       </div>
-      <div className="ml-72 h-min-screen bg-grey-400 min-h-screen p-4">
+      <div className="ml-72 h-min-screen bg-grey-300 min-h-screen p-4">
         <CreateContentModal
           open={modelOpen}
           onClose={() => {
