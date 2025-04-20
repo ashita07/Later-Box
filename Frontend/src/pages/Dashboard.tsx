@@ -40,7 +40,7 @@ export const Dashboard: React.FC = () => {
         <div className="flex min-h-60 ">
           <Card
             type="twitter"
-            link="https://x.com/nitesh_singh5/status/1868697579237896513"
+            link="https://x.com/ThakurAbhay342/status/1913533899197890917"
             title="first tweet"
           />
           <Card
