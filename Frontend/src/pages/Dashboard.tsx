@@ -6,8 +6,10 @@ import { ShareIcon } from "../icons/ShareIcon";
 import { Card } from "../Components/Card";
 import { CreateContentModal } from "../Components/CreateContentModal";
 import { SideBar } from "../Components/Sidebar";
+import { useContent } from "../hooks/useContent";
 
 export const Dashboard: React.FC = () => {
+  const contents = useContent();
   const [modelOpen, setModelOpen] = useState(false);
   return (
     <>
@@ -21,7 +23,7 @@ export const Dashboard: React.FC = () => {
             setModelOpen(false);
           }}
         />
-        <div className="flex justify-evenly p-8">
+        <div className="flex justify-end p-8 gap-4">
           <Button
             startIcon={<PlusIcon size="md" />}
             text="share content"
@@ -37,17 +39,10 @@ export const Dashboard: React.FC = () => {
             variant="secondary"
           />
         </div>
-        <div className="flex min-h-60 ">
-          <Card
-            type="twitter"
-            link="https://x.com/ThakurAbhay342/status/1913533899197890917"
-            title="first tweet"
-          />
-          <Card
-            type="youtube"
-            link="https://www.youtube.com/watch?v=DjYZk8nrXVY&ab_channel=AshishPratapSingh"
-            title="Youtube video"
-          />
+        <div className="flex flex-wrap gap-4 justify-start  ">
+          {contents.map(({ type, link, title }) => (
+            <Card type={type} link={link} title={title} />
+          ))}
         </div>
       </div>
     </>

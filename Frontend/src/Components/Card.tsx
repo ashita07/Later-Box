@@ -8,7 +8,7 @@ interface CardProps {
 }
 export function Card(props: CardProps) {
   return (
-    <div className="p-4 bg-white rounded-md shadow-md outline-slate-200 border border-grey-400 max-w-80">
+    <div className="p-4 m-4 bg-white rounded-md shadow-md outline-slate-200 border border-grey-400 max-w-80">
       <div className="flex justify-between">
         <div className="flex items-center ">
           <div className="pr-2 text-grey-500">
