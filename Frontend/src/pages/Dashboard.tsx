@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../Components/Button";
 
 import { PlusIcon } from "../icons/plusIcon";
@@ -6,11 +6,56 @@ import { ShareIcon } from "../icons/ShareIcon";
 import { Card } from "../Components/Card";
 import { CreateContentModal } from "../Components/CreateContentModal";
 import { SideBar } from "../Components/Sidebar";
-import { useContent } from "../hooks/useContent";
+
+import axios from "axios";
+import { backend_url } from "../../config";
+import { fetchContent } from "../hooks/useContent";
 
 export const Dashboard: React.FC = () => {
-  const contents = useContent();
+  const [contents, setContents] = useState([]);
   const [modelOpen, setModelOpen] = useState(false);
+  async function loadContents() {
+    try {
+      const data = await fetchContent();
+      setContents(data);
+    } catch (error) {
+      console.error("Failed to load contents", error);
+    }
+  }
+
+  useEffect(() => {
+    loadContents(); // fetch when page loads
+  }, []);
+
+  async function generateLink() {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("User not authenticated");
+      }
+
+      const response = await axios.post(
+        `${backend_url}/api/v1/link/share`, // <-- fixed the +
+        {
+          shareWholeContent: true,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      const data = response.data.shareLink;
+      await navigator.clipboard.writeText(data);
+      alert("Link copied to clipboard");
+    } catch (error) {
+      console.error("Error generating share link:", error);
+      throw error; // or you can show a toast or alert to user
+    }
+  }
+
   return (
     <>
       <div>
@@ -21,11 +66,13 @@ export const Dashboard: React.FC = () => {
           open={modelOpen}
           onClose={() => {
             setModelOpen(false);
+            loadContents();
           }}
         />
         <div className="flex justify-end p-8 gap-4">
           <Button
-            startIcon={<PlusIcon size="md" />}
+            onClick={generateLink}
+            startIcon={<ShareIcon size="md" />}
             text="share content"
             size="md"
             variant="primary"
@@ -33,7 +80,7 @@ export const Dashboard: React.FC = () => {
 
           <Button
             onClick={() => setModelOpen(true)}
-            startIcon={<ShareIcon size="md" />}
+            startIcon={<PlusIcon size="md" />}
             text="add content"
             size="md"
             variant="secondary"
