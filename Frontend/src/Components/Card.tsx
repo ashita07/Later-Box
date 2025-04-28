@@ -6,43 +6,42 @@ import { ShareIcon } from "../icons/ShareIcon";
 interface CardProps {
   title: string;
   link: string;
-  type: "twitter" | "youtube";
+  type: "Twitter" | "Youtube";
 }
 export function Card(props: CardProps) {
   const videoId = props.link.split("v=")[1]?.split("&")[0];
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
   useEffect(() => {
-    if (props.type === "twitter" && (window as any).twttr) {
+    if (props.type === "Twitter" && (window as any).twttr) {
       (window as any).twttr.widgets.load();
     }
   }, []);
 
   return (
-    <div className="p-4 m-4 bg-white rounded-md shadow-md outline-slate-200 border border-grey-400 max-w-80">
-      <div className="flex justify-between">
-        <div className="flex items-center ">
-          <div className="pr-2 text-grey-500">
-            <ShareIcon size="md" />
+    <div className="p-4 bg-white rounded-md shadow-md outline-slate-200 border border-gray-400 max-w-80 gap-4 flex flex-col">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2 ">
+          <ShareIcon size="md" />
+
+          <div className="text-lg break-words font-medium max-w-[200px]">
+            {props.title}
           </div>
-          <div className="text-lg font-medium">{props.title}</div>
         </div>
-        <div className="flex items-center text-grey-500">
-          <div className="pr-2">
-            <a href={props.link} target="_blank" rel="noopener noreferrer">
-              <ShareIcon size="md" />
-            </a>
-          </div>
+        <div className="flex items-center text-grey-500 gap-2">
+          <a href={props.link} target="_blank" rel="noopener noreferrer">
+            <ShareIcon size="md" />
+          </a>
 
           <DeleteIcon />
         </div>
       </div>
-      <div className="p-3">
-        {props.type === "youtube" && (
+      <div>
+        {props.type === "Youtube" && (
           <div className="relative w-full">
             {/* The iframe displays the embedded video */}
             <iframe
-              className=" w-full h-[315px] rounded-md" // Adjust height if needed
+              className=" w-full h-[200px] rounded-md" // Adjust height if needed
               src={embedUrl}
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -57,7 +56,7 @@ export function Card(props: CardProps) {
             ></div>
           </div>
         )}
-        {props.type === "twitter" && (
+        {props.type === "Twitter" && (
           <blockquote className="twitter-tweet">
             <a href={props.link.replace("x.com", "twitter.com")} />
           </blockquote>
