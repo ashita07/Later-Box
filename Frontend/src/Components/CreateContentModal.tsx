@@ -10,8 +10,8 @@ interface propsF {
   onClose: () => void;
 }
 enum ContentType {
-  Youtube = "youtube",
-  Twitter = "twitter",
+  Youtube = "Youtube",
+  Twitter = "Twitter",
 }
 
 export function CreateContentModal(props: propsF) {
@@ -63,7 +63,7 @@ export function CreateContentModal(props: propsF) {
                   onClick={() => {
                     setType(ContentType.Youtube);
                   }}
-                  text="youtube"
+                  text="Youtube"
                   variant={
                     type === ContentType.Youtube ? "secondary" : "primary"
                   }

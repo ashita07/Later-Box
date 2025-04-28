@@ -36,7 +36,7 @@ export const Dashboard: React.FC = () => {
       }
 
       const response = await axios.post(
-        `${backend_url}/api/v1/link/share`, // <-- fixed the +
+        `${backend_url}/api/v1/link/share`,
         {
           shareWholeContent: true,
         },
