@@ -3,6 +3,7 @@ import { Boxed } from "../icons/Box";
 import { TwitterIcon } from "../icons/Twitter";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { SidebarItem } from "./SidebarItem";
+import Bars from "../icons/Bars";
 
 export function SideBar() {
   const navigate = useNavigate();
@@ -18,6 +19,15 @@ export function SideBar() {
         <h1 className="content-center ">LaterBox</h1>
       </div>
       <div className="pl-2 pr-2 ">
+        <SidebarItem
+          onClick={() => navigate("/dashboard")}
+          text="Dashboard"
+          icon={
+            <div className="text-grey-500">
+              <Bars />
+            </div>
+          }
+        />
         <SidebarItem
           onClick={() => navigate("/dashboard/twitter")}
           text="Twitter"
