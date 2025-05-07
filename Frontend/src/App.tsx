@@ -1,7 +1,7 @@
 import { Signin } from "./pages/Signin";
 import { Signup } from "./pages/Signup";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TwitterPage from "./pages/TwitterPage";
+import { TwitterPage } from "./pages/TwitterPage";
 import YoutubePage from "./pages/YoutubePage";
 import { DashboardLayout } from "./Layouts/DashboardLayout";
 import { Dashboard } from "./pages/Dashboard";

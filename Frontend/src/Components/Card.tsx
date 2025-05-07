@@ -6,14 +6,14 @@ import { ShareIcon } from "../icons/ShareIcon";
 interface CardProps {
   title: string;
   link: string;
-  type: "Twitter" | "Youtube";
+  type: "twitter" | "youtube";
 }
 export function Card(props: CardProps) {
   const videoId = props.link.split("v=")[1]?.split("&")[0];
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
   useEffect(() => {
-    if (props.type === "Twitter" && (window as any).twttr) {
+    if (props.type === "twitter" && (window as any).twttr) {
       (window as any).twttr.widgets.load();
     }
   }, []);
@@ -37,7 +37,7 @@ export function Card(props: CardProps) {
         </div>
       </div>
       <div>
-        {props.type === "Youtube" && (
+        {props.type === "youtube" && (
           <div className="relative w-full">
             {/* The iframe displays the embedded video */}
             <iframe
@@ -56,7 +56,7 @@ export function Card(props: CardProps) {
             ></div>
           </div>
         )}
-        {props.type === "Twitter" && (
+        {props.type === "twitter" && (
           <blockquote className="twitter-tweet">
             <a href={props.link.replace("x.com", "twitter.com")} />
           </blockquote>

@@ -139,12 +139,27 @@ app.post("/api/v1/postContent", UserMiddleware, async (req, res) => {
 
 app.get("/api/v1/ViewContent", UserMiddleware, async (req, res) => {
   const userId = req.userId;
-  const content = await ContentModel.find({
-    userId: userId,
-  }).populate({ path: "userId", select: "-password" });
-  res.json({
-    content,
-  });
+  const { type } = req.query;
+  const filter: Record<string, any> = { userId };
+
+  const normalizedType = (type as string)?.toLowerCase();
+  console.log(normalizedType);
+  if (normalizedType === "twitter" || normalizedType === "youtube") {
+    filter.type = normalizedType;
+  }
+
+  try {
+    const content = await ContentModel.find(filter).populate({
+      path: "userId",
+      select: "-password",
+    });
+    res.json({
+      content,
+    });
+  } catch (err) {
+    console.error("Failed to fetch content: ", err);
+    res.status(500).json({ error: "internal server error" });
+  }
 });
 
 app.delete("/api/v1/deleteContent", UserMiddleware, async (req, res) => {

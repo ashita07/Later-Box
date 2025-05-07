@@ -8,7 +8,7 @@ import { CreateContentModal } from "../Components/CreateContentModal";
 
 import axios from "axios";
 import { backend_url } from "../../config";
-import { fetchContent } from "../hooks/useContent";
+import { fetchContent } from "../hooks/fetchContent";
 
 export const Dashboard: React.FC = () => {
   const [contents, setContents] = useState([]);

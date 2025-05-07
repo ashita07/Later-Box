@@ -10,14 +10,14 @@ interface propsF {
   onClose: () => void;
 }
 enum ContentType {
-  Youtube = "Youtube",
-  Twitter = "Twitter",
+  youtube = "youtube",
+  twitter = "twitter",
 }
 
 export function CreateContentModal(props: propsF) {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
-  const [type, setType] = useState(ContentType.Youtube);
+  const [type, setType] = useState(ContentType.youtube);
 
   async function submit() {
     console.log("DATA SENDING:", { title, link, type });
@@ -61,21 +61,21 @@ export function CreateContentModal(props: propsF) {
                 <Button
                   size="md"
                   onClick={() => {
-                    setType(ContentType.Youtube);
+                    setType(ContentType.youtube);
                   }}
-                  text="Youtube"
+                  text="youtube"
                   variant={
-                    type === ContentType.Youtube ? "secondary" : "primary"
+                    type === ContentType.youtube ? "secondary" : "primary"
                   }
                 ></Button>
                 <Button
                   size="md"
                   onClick={() => {
-                    setType(ContentType.Twitter);
+                    setType(ContentType.twitter);
                   }}
-                  text="Twitter"
+                  text="twitter"
                   variant={
-                    type === ContentType.Twitter ? "secondary" : "primary"
+                    type === ContentType.twitter ? "secondary" : "primary"
                   }
                 ></Button>{" "}
               </div>
