@@ -1,13 +1,17 @@
 import { useEffect } from "react";
 import { DeleteIcon } from "../icons/Delete";
 import { ShareIcon } from "../icons/ShareIcon";
+import { onDelete } from "../hooks/fetchContent";
 /* eslint-disable */
 
 interface CardProps {
   title: string;
   link: string;
   type: "twitter" | "youtube";
+  id: string;
+  onDelete: (id: string) => void;
 }
+
 export function Card(props: CardProps) {
   const videoId = props.link.split("v=")[1]?.split("&")[0];
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
@@ -17,6 +21,14 @@ export function Card(props: CardProps) {
       (window as any).twttr.widgets.load();
     }
   }, []);
+  async function deleteItem() {
+    try {
+      await onDelete(props.id);
+      props.onDelete(props.id);
+    } catch (err) {
+      console.error("Failed to delete content:", err);
+    }
+  }
 
   return (
     <div className="p-4 bg-white rounded-md shadow-md outline-slate-200 border border-gray-400 max-w-80 gap-4 flex flex-col">
@@ -32,8 +44,14 @@ export function Card(props: CardProps) {
           <a href={props.link} target="_blank" rel="noopener noreferrer">
             <ShareIcon size="md" />
           </a>
-
-          <DeleteIcon />
+          <div
+            onClick={deleteItem}
+            role="button"
+            tabIndex={0}
+            className="cursor-pointer"
+          >
+            <DeleteIcon />
+          </div>
         </div>
       </div>
       <div>

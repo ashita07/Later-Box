@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { fetchContentTwitter } from "../hooks/fetchContent";
+interface content {
+  _id: string;
+  type: "twitter" | "youtube";
+  link: string;
+  title: string;
+}
 import { Card } from "../Components/Card";
 
 export const TwitterPage: React.FC = () => {
-  const [contents, setContents] = useState([]);
+  const [contents, setContents] = useState<content[]>([]);
   async function loadContents() {
     try {
       const data = await fetchContentTwitter();
@@ -21,8 +27,17 @@ export const TwitterPage: React.FC = () => {
       {contents.length === 0 ? (
         <p>No Twitter content found.</p>
       ) : (
-        contents.map(({ type, link, title }, idx) => (
-          <Card key={idx} type={type} link={link} title={title} />
+        contents.map(({ _id, type, link, title }, idx) => (
+          <Card
+            id={_id}
+            key={idx}
+            type={type}
+            link={link}
+            title={title}
+            onDelete={(id) =>
+              setContents((prev) => prev.filter((c) => c._id !== id))
+            }
+          />
         ))
       )}
     </div>

@@ -9,9 +9,15 @@ import { CreateContentModal } from "../Components/CreateContentModal";
 import axios from "axios";
 import { backend_url } from "../../config";
 import { fetchContent } from "../hooks/fetchContent";
+interface content {
+  _id: string;
+  type: "twitter" | "youtube";
+  link: string;
+  title: string;
+}
 
 export const Dashboard: React.FC = () => {
-  const [contents, setContents] = useState([]);
+  const [contents, setContents] = useState<content[]>([]);
   const [modelOpen, setModelOpen] = useState(false);
   async function loadContents() {
     try {
@@ -83,8 +89,17 @@ export const Dashboard: React.FC = () => {
       </div>
 
       <div className="flex flex-wrap gap-6">
-        {contents.map(({ type, link, title }, idx) => (
-          <Card key={idx} type={type} link={link} title={title} />
+        {contents.map(({ _id, type, link, title }, idx) => (
+          <Card
+            id={_id}
+            key={idx}
+            type={type}
+            link={link}
+            title={title}
+            onDelete={(id) =>
+              setContents((prev) => prev.filter((c) => c._id !== id))
+            }
+          />
         ))}
       </div>
     </div>

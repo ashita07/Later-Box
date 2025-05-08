@@ -36,3 +36,15 @@ export async function fetchContentYoutube() {
   });
   return (await response).data.content;
 }
+
+export async function onDelete(contentId: string) {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("no auth token found");
+
+  await axios.delete(`${backend_url}/api/v1/deleteContent`, {
+    data: { contentId },
+    headers: {
+      Authorization: token,
+    },
+  });
+}

@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { fetchContentYoutube } from "../hooks/fetchContent";
 import { Card } from "../Components/Card";
+interface content {
+  _id: string;
+  type: "twitter" | "youtube";
+  link: string;
+  title: string;
+}
 
 export const YoutubePage: React.FC = () => {
-  const [contents, setContents] = useState([]);
+  const [contents, setContents] = useState<content[]>([]);
   async function loadContents() {
     try {
       const data = await fetchContentYoutube();
@@ -21,8 +27,17 @@ export const YoutubePage: React.FC = () => {
       {contents.length === 0 ? (
         <p>No Youtube content found.</p>
       ) : (
-        contents.map(({ type, link, title }, idx) => (
-          <Card key={idx} type={type} link={link} title={title} />
+        contents.map(({ _id, type, link, title }, idx) => (
+          <Card
+            id={_id}
+            key={idx}
+            type={type}
+            link={link}
+            title={title}
+            onDelete={(id) =>
+              setContents((prev) => prev.filter((c) => c._id !== id))
+            }
+          />
         ))
       )}
     </div>
